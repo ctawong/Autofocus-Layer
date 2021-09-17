@@ -1,3 +1,9 @@
+```
+python test_online.py --test_path datalist/test_list_custom.txt  --visualize --num_gpus 1 --id AFN1 --test_epoch 390
+```
+
+
+
 # Autofocus Layer for Semantic Segmentation
 
 ## Introduction
@@ -19,6 +25,9 @@ If you find the code or the models implemented here are useful, please cite our 
 [Y. Qin](http://cseweb.ucsd.edu/~yaq007/), K. Kamnitsas, S. Ancha, J. Nanavati, G. Cottrell, A. Criminisi, A. Nori, MICCAI 2018.
 
 ## Data
+
+
+
 
 You can download the full dataset with training and testing images from https://www.smir.ch/BRATS/Start2015. To run all the models here,
 you need to do a series of data pre-processing to the input images. 

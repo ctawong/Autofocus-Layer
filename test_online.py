@@ -16,11 +16,11 @@ from dataset import TestDataset
 import SimpleITK as sitk 
 
 # save prediction results in the format of online submission
-def visualize_result(name, pred, args):
-    _, _, name1, _, name2 = name.split("/")
-    _, _, _, _, _, name3, _ = name2.split(".")
+def visualize_result(name, pred, args, saveSamePath = True):
+    name2 = name.split("/")[-1]
     pred = sitk.GetImageFromArray(pred)
-    sitk.WriteImage(pred, args.result + "/VSD"+"."+ str(name1) + '.'+ str(name3)+ '.mha')
+    path = '/'.join(name.split("/")[0:-1])
+    sitk.WriteImage(pred, path + '/' + 'segmentation.mha')
 
 
 # compute the number of segments of  the test images
@@ -124,7 +124,13 @@ def main(args):
             image = np.expand_dims(image, axis=0)
             im.append(image)
             if j == 0:
-                mask = nib.load(args.root_path + direct + "mask/mask.nii").get_data()
+                try:
+                    mask = nib.load(args.root_path + direct + ".mask.nii.gz").get_data()
+                except:
+                    maskpath = direct.split('/')
+                    maskpath[-1] = 'mask.nii.gz'
+                    maskpath = '/'.join(maskpath)
+                    mask = nib.load(maskpath).get_data()
                    
         images = np.concatenate(im, axis=0).astype(float)
 
@@ -197,8 +203,10 @@ if __name__ == '__main__':
 
     # Data related arguments
     parser.add_argument('--crop_size', default=[75,75,75], nargs='+', type=int,
+    #parser.add_argument('--crop_size', default=[30,256,256], nargs='+', type=int,
                         help='crop size of the input image (int or list)')
     parser.add_argument('--center_size', default=[47,47,47], nargs='+', type=int,
+    #parser.add_argument('--center_size', default=[30,256,256], nargs='+', type=int,
                         help='the corresponding output size of the input image (int or list)')
     parser.add_argument('--num_classes', default=5, type=int,
                         help='number of classes')
@@ -224,7 +232,7 @@ if __name__ == '__main__':
     parser.add_argument('--result', default='./result',
                         help='folder to output prediction results')
     parser.add_argument('--num_round', default=None, type=int,
-                        help='restore the models from which run'))
+                        help='restore the models from which run')
 
     args = parser.parse_args()
     print("Input arguments:")
